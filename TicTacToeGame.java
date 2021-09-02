@@ -53,6 +53,18 @@ public class TicTacToeGame {
 				flag = computerWin();
 				if (flag == 1)
 					break outerloop;
+				flag = computerBlock();
+				if (flag == 1) {
+					turn++;
+					flag = 0;
+					return;
+				}
+				flag = computerCorner();
+				if (flag == 1) {
+					turn++;
+					flag = 0;
+					return;
+				}
 			}
 		}
 	}
@@ -177,7 +189,7 @@ public class TicTacToeGame {
 	/**
 	 * Checking either user is winning or not Calling winArray method for winning
 	 * choices
-	 * 
+	 *
 	 * @param win[]
 	 */
 	public static int checkWin() {
@@ -275,6 +287,39 @@ public class TicTacToeGame {
 			currentBoard();
 			System.out.println("I won. Better Luck next time");
 			flag = 1;
+		}
+		return flag;
+	}
+
+	/**
+	 * making User block from winning
+	 * 
+	 * @return flag
+	 */
+	private static int computerBlock() {
+		int index = winBlock(userMark, computerMark);
+		if (index != 0) {
+			element[index] = computerMark;
+			System.out.println("Computer goes for '" + index + "' to block User");
+			flag = 1;
+		}
+		return flag;
+	}
+
+	/**
+	 * Making computer to choose corner
+	 * 
+	 * @return flag
+	 */
+	private static int computerCorner() {
+		int corner[] = { 7, 3, 1, 9 };
+		for (int i = 0; i < 4; i++) {
+			if (element[corner[i]] != 'X' && element[corner[i]] != 'O') {
+				element[corner[i]] = computerMark;
+				System.out.println("Computer choice is '" + corner[i] + "'");
+				flag = 1;
+				break;
+			}
 		}
 		return flag;
 	}
