@@ -26,25 +26,23 @@ public class TicTacToeGame {
 		// to play the game until some one wins i.e. flag=1
 		outerloop: while (flag == 0) {
 			if ((turn + 1) % 2 == 0) {
+				// to check whether game is tie or not
+				flag = checkTie();
+				if (flag != 0) {
+					System.out.println("Nice Play! It's Tie");
+					;
+					break outerloop;
+				}
 				// for display the current board
 				currentBoard();
 				// for calling the user for number
 				userCall();
 				// for making the mark on user number
 				userMove();
-				// After user making move showing the board
-				currentBoard();
 				// to check whether user is winner or not
 				flag = checkWin();
-				if (flag == 1) {
+				if (flag != 0) {
 					System.out.println("Excellent! You are the winner");
-					break outerloop;
-				}
-				// to check whether game is tie or not
-				flag = checkTie();
-				if (flag == 1) {
-					System.out.println("Nice Play! It's Tie");
-					;
 					break outerloop;
 				}
 				turn++;
@@ -81,8 +79,15 @@ public class TicTacToeGame {
 				}
 			}
 		}
+		// To initiate the game again
+		gameAgain();
 	}
 
+	/**
+	 * creating elements with null 0th index ignored for user friendly
+	 * 
+	 * @param element
+	 */
 	private static void boardCreation() {
 		element = new char[10];
 		for (int i = 1; i < 10; i++) {
@@ -90,9 +95,14 @@ public class TicTacToeGame {
 		}
 	}
 
-	// Asking user to choose X or O
+	/**
+	 * Asking user to choose X or O
+	 * 
+	 * @param option
+	 * @return userMark, computerMark
+	 */
 	private static void choosingXorO() {
-		System.out.println("Choose 1 for 'X' or Choose 2 for 'O' as your mark");
+		System.out.println("Select your mark\n\nChoose '1' for X\nChoose '2' for O");
 		int option = scan.nextInt();
 		switch (option) {
 		case 1:
@@ -107,11 +117,14 @@ public class TicTacToeGame {
 			System.out.println("Your input is invalid");
 			choosingXorO();
 		}
-		System.out.println("\nUser Mark: '" + userMark + "' and Computer Mark: '" + computerMark + "'");
-
+		System.out.println("\nYour mark is '" + userMark + "' & Computer Mark:'" + computerMark + "'");
 	}
 
-	// Assignment element wih number if it is not marked
+	/**
+	 * Assigning elements with numbers if it is not marked
+	 * 
+	 * @param element[]
+	 */
 	private static void currentBoard() {
 		for (int i = 1; i < 10; i++) {
 			if (element[i] != 'X' && element[i] != 'O') {
@@ -121,8 +134,9 @@ public class TicTacToeGame {
 		displayingBoard();
 	}
 
-	/*
-	 * Displays board layout Elements are assigned with marks and numbers
+	/**
+	 * Displays board layout 
+	 * Elements are assigned with marks and numbers
 	 */
 	private static void displayingBoard() {
 		System.out.println("\n  " + element[1] + " | " + element[2] + " | " + element[3] + " ");
@@ -134,10 +148,11 @@ public class TicTacToeGame {
 
 	/**
 	 * Asking user for a number and checks whether the number is with in the board
-	 * userNumber
+	 * 
+	 * @param userNumber
 	 */
 	private static void userCall() {
-		System.out.println("\nEnter a number from board to make the mark:\n");
+		System.out.println("Enter a number from board to make the mark:");
 		userNumber = scan.nextInt();
 		if (userNumber < 1 || userNumber > 9) {
 			currentBoard();
@@ -147,8 +162,8 @@ public class TicTacToeGame {
 	}
 
 	/**
-	 * Checking whether the user number is free or not If user number is available,
-	 * making the move
+	 * Checking whether the user number is free or not
+	 * If user number is available, making the move
 	 */
 	private static void userMove() {
 		if (element[userNumber] == 'X' || element[userNumber] == 'O') {
@@ -157,6 +172,7 @@ public class TicTacToeGame {
 			userCall();
 			userMove();
 		} else {
+			System.out.println("You choose number " + userNumber);
 			element[userNumber] = userMark;
 		}
 	}
@@ -166,9 +182,8 @@ public class TicTacToeGame {
 	 * 
 	 * @param Head and Tail
 	 */
-
 	private static void tossCoin() {
-		System.out.println("\nMaking a toss to check who plays first\nChoose 1 for Head or 2 for Tail");
+		System.out.println("\nMaking a toss to check who plays first\nChoose '1' for HEAD\nChoose '2' for TAIL");
 		int option = scan.nextInt();
 		if (option == 1 || option == 2) {
 			int flip = random.nextInt(2) + 1;
@@ -178,13 +193,13 @@ public class TicTacToeGame {
 				System.out.println("\nBy tossing Coin it shows TAIL\n");
 			}
 			if (flip == option) {
-				System.out.println("User will start the game\n");
+				System.out.println("You have to start the game");
 			} else {
-				System.out.println("Computer will start the game\n");
-				computerFirstTurn();
+				System.out.println("Computer will start the game");
+				turn++;
 			}
 		} else {
-			System.out.println("\nInvalid input Again");
+			System.out.println("\nInvalid input Choose number from below");
 			tossCoin();
 		}
 	}
@@ -277,16 +292,13 @@ public class TicTacToeGame {
 		int winBlock[] = new int[3];
 		for (int i = 1; i < 9; i++) {
 			winBlock = winArray(i);
-			if (element[winBlock[0]] == element[winBlock[1]] && element[winBlock[0]] == playerMark
-					&& element[winBlock[2]] != opponentMark) {
+			if (element[winBlock[0]] == element[winBlock[1]] && element[winBlock[0]] == playerMark && element[winBlock[2]] != opponentMark) {
 				flag = winBlock[2];
 				break;
-			} else if (element[winBlock[0]] == element[winBlock[2]] && element[winBlock[2]] == playerMark
-					&& element[winBlock[1]] != opponentMark) {
+			} else if (element[winBlock[0]] == element[winBlock[2]] && element[winBlock[2]] == playerMark && element[winBlock[1]] != opponentMark) {
 				flag = winBlock[1];
 				break;
-			} else if (element[winBlock[1]] == element[winBlock[2]] && element[winBlock[2]] == playerMark
-					&& element[winBlock[0]] != opponentMark) {
+			} else if (element[winBlock[1]] == element[winBlock[2]] && element[winBlock[2]] == playerMark && element[winBlock[0]] != opponentMark) {
 				flag = winBlock[0];
 				break;
 			}
@@ -354,6 +366,12 @@ public class TicTacToeGame {
 		return flag;
 	}
 
+	/**
+	 * making computer option by sequential order in array
+	 * 
+	 * @param array
+	 * @return flag
+	 */
 	private static int computerOption(int[] array) {
 		for (int j = 0; j < 4; j++) {
 			if (element[array[j]] != 'X' && element[array[j]] != 'O') {
@@ -365,4 +383,20 @@ public class TicTacToeGame {
 		}
 		return flag;
 	}
-}
+
+	/**
+	 * Asking user to initiate the game or not
+	 */
+	private static void gameAgain() {
+		System.out.println("\nWanna play again. 1) Restart 2) Exit");
+		int option = scan.nextInt();
+		if (option == 1) {
+			String[] args = {};
+			main(args);
+		} else {
+			System.exit(1);
+		}
+	}
+
+	}
+
